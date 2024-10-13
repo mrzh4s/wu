@@ -184,6 +184,20 @@
             }
         });
 
+        // Disable right-click context menu
+        document.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+        });
+
+        // Disable text selection
+        document.onselectstart = function () {
+            return false;
+        };
+
+        // Disable dragging
+        document.ondragstart = function () {
+            return false;
+        };
     </script>
 </body>
 

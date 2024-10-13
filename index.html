@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Windows-update</title>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .update {
+            background-color: black;
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .update__content {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .update__spinner {
+            text-align: center;
+            margin: 20px;
+        }
+
+        .update__text {
+            text-align: center;
+            color: #fbfdfd;
+            font-family: sans-serif;
+            font-size: 20px;
+            line-height: 30px;
+        }
+
+        .update__loader {
+            height: 50px;
+            width: 50px;
+            margin: 20px;
+        }
+
+        .update__spinner {
+            width: 50px;
+            height: 50px;
+            border-radius: 50px;
+            position: absolute;
+            margin: 0;
+            animation-name: rotate;
+            animation-duration: 1.4s;
+            animation-timing-function: cubic-bezier(0.05, 0.57, 0.63, 0.38);
+            animation-delay: 0s;
+            animation-iteration-count: infinite;
+        }
+
+        .update__spinner--second {
+            animation-delay: 0.2s;
+        }
+
+        .update__spinner--third {
+            animation-delay: 0.4s;
+        }
+
+        .update__spinner--four {
+            animation-delay: 0.6s;
+        }
+
+        .update__spinner--five {
+            animation-delay: 0.8s;
+        }
+
+        .update__spinner--six {
+            animation-delay: 1s;
+        }
+
+        .spinner__point {
+            width: 7px;
+            height: 7px;
+            border-radius: 10px;
+            background-color: white
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0.7turn)
+            }
+
+            100% {
+                transform: rotate(1.7turn)
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="update">
+        <div class="update__content">
+
+            <div class="update__loader">
+                <div class="update__spinner">
+                    <div class="spinner__point"></div>
+                </div>
+                <div class="update__spinner update__spinner--second">
+                    <div class="spinner__point"></div>
+                </div>
+                <div class="update__spinner update__spinner--third">
+                    <div class="spinner__point"></div>
+                </div>
+                <div class="update__spinner update__spinner--four">
+                    <div class="spinner__point"></div>
+                </div>
+                <div class="update__spinner update__spinner--five">
+                    <div class="spinner__point"></div>
+                </div>
+            </div>
+
+            <div class="update__text">
+                <p>Working on updates</p>
+                <p id="update__percentage">0% complete</p>
+                <p>Don't turn off your computer</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Init percentage
+        let percentage = 0;
+        let currentTime;
+        let time = 500000; // 5 minutes
+        let refresh = 1000; // 1 second
+
+        window.onload = function () {
+            currentTime = time;
+            requestFullscreen();
+            loading();
+        }
+
+        function loading() {
+            currentTime -= refresh;
+            percentage = ((time - currentTime) * 100) / time;
+            document.querySelector('#update__percentage').innerHTML = parseInt(percentage) + '% complete';
+            if (currentTime != 0) {
+                setTimeout(loading, refresh);
+            }
+        }
+
+        // Automatically request fullscreen
+        function requestFullscreen() {
+            const element = document.documentElement;
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) { // Firefox
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) { // Chrome, Safari, and Opera
+                element.webkitRequestFullscreen();
+            } else if (element.msRequestFullscreen) { // IE/Edge
+                element.msRequestFullscreen();
+            }
+        }
+
+        // Block key combinations like Esc, F11 (fullscreen toggle), etc.
+        document.addEventListener('keydown', function (event) {
+            // Block F11 (Fullscreen Toggle) and Escape
+            if (event.key === 'F11' || event.key === 'Escape') {
+                event.preventDefault();
+            }
+
+            // Attempt to block Alt+F4 (Note: this is OS-level and not entirely blockable)
+            if ((event.altKey && event.key === 'F4') || (event.ctrlKey && event.key === 'w')) {
+                event.preventDefault();
+            }
+        });
+
+        // Attempt to re-enable fullscreen if the user tries to exit it
+        document.addEventListener('fullscreenchange', function () {
+            if (!document.fullscreenElement) {
+                requestFullscreen(); // Re-enter fullscreen if exited
+            }
+        });
+
+    </script>
+</body>
+
+</html>
